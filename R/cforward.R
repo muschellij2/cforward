@@ -64,6 +64,7 @@ estimate_concordance = function(
     fit_k$residuals = fit_k$weights = fit_k$linear.predictors = NULL
     fit_k$call$data = fit_k$y = NULL
     fit_k$call$weights = fit_k$call$strata = NULL
+    fit_k$call[[1]] = as.name("survival::coxph")
     list(concordance = cfit$concordance,
          model = fit_k)
 }
