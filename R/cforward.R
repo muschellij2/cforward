@@ -63,6 +63,7 @@ estimate_concordance = function(
     cfit = do.call(survival::concordancefit, args = cfit_args)
     fit_k$residuals = fit_k$weights = fit_k$linear.predictors = NULL
     fit_k$call$data = fit_k$y = NULL
+    fit_k$call$weights = fit_k$call$strata = NULL
     list(concordance = cfit$concordance,
          model = fit_k)
 }
