@@ -19,8 +19,6 @@
 #'
 #' @return A list of concordance and the model fit with the training data
 #' @export
-#'
-#' @examples
 estimate_concordance = function(
     train,
     test = train,
@@ -109,6 +107,19 @@ estimate_concordance = function(
 #' @importFrom stats as.formula predict
 #'
 #' @examples
+#' variables = c("gender",
+#'               "age_years_interview", "education_adult")
+#'
+#' res = cforward(nhanes_example,
+#'                event_time = "event_time_years",
+#'                event_status = "mortstat",
+#'                weight_column = "WTMEC4YR_norm",
+#'                variables = variables,
+#'                included_variables = NULL,
+#'                n_folds = 5,
+#'                seed = 1989,
+#'                max_model_size = 50,
+#'                verbose = TRUE)
 cforward = function(
     data,
     event_time = "event_time_years",

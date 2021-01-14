@@ -83,3 +83,18 @@ those being selection upon}
 \description{
 Forward Selection Based on C-Index/Concordance
 }
+\examples{
+variables = c("gender",
+              "age_years_interview", "education_adult")
+
+res = cforward(nhanes_example,
+               event_time = "event_time_years",
+               event_status = "mortstat",
+               weight_column = "WTMEC4YR_norm",
+               variables = variables,
+               included_variables = NULL,
+               n_folds = 5,
+               seed = 1989,
+               max_model_size = 50,
+               verbose = TRUE)
+}
