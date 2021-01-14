@@ -17,7 +17,7 @@
 #' `strata` is to be passed, set `strata_column` in this list.
 #' @param ... Additional arguments to pass to \code{\link{coxph}}
 #'
-#' @return
+#' @return A list of concordance and the model fit with the training data
 #' @export
 #'
 #' @examples
@@ -60,9 +60,9 @@ estimate_concordance = function(
         cfit_args$strata_column = NULL
     }
 
-    cfit = do.call(survival::concordancefit, args = args)
+    cfit = do.call(survival::concordancefit, args = cfit_args)
     fit_k$residuals = fit_k$weights = fit_k$linear.predictors = NULL
-    fit_k$y = NULL
+    fit_k$call$data = fit_k$y = NULL
     list(concordance = cfit$concordance,
          model = fit_k)
 }
@@ -104,6 +104,7 @@ estimate_concordance = function(
 #' those being selection upon}
 #' }
 #' @export
+#' @importFrom stats as.formula predict
 #'
 #' @examples
 cforward = function(
@@ -297,3 +298,4 @@ cforward_one = function(
         included_variables = included_variables)
     return(L)
 }
+

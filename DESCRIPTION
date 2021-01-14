@@ -23,6 +23,7 @@ Imports:
     survival,
     dplyr,
     stats,
-    magrittr
+    magrittr,
+    tibble
 URL: https://github.com/muschellij2/cforward
 BugReports: https://github.com/muschellij2/cforward/issues
