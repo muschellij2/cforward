@@ -35,18 +35,24 @@ estimate_concordance = function(
     if ("data" %in% names(args)) {
         warning("data set in ... for estimate_concordance, will be overridden")
     }
-    args = list(formula = as.formula(paste0(y, form)),
-                data=train,
-                ...)
+    args$formula = as.formula(paste0(y, form))
+    args$data = train
     if ("weights" %in% names(args)) {
         warning(paste0("Weights were specified in argument, ",
                        "overridden by weight_column"))
     }
-    args$weights=train[[weight_column]]
+    args$weights = train[[weight_column]]
 
     fit_k <- do.call(survival::coxph, args = args)
     eta_k <- predict(fit_k, type='lp', newdata=test)
 
+    # allows for "1" for all_variables
+    check_vars = c(all_variables, event_status, event_time)
+    check_vars = intersect(check_vars, colnames(test))
+    if (anyNA(test[check_vars])) {
+        warning(paste0("Missing elements in the test data! ",
+                       "Please remove prior to running"))
+    }
     cfit_args$y = survival::Surv(test[[event_time]],
                                  test[[event_status]])
     cfit_args$x = eta_k
@@ -57,8 +63,26 @@ estimate_concordance = function(
         cfit_args$strata = test[[cfit_args$strata_column]]
         cfit_args$strata_column = NULL
     }
+    checker = function(x, n) {
+        if (is.null(x)) {
+            x = rep(TRUE, n)
+        } else {
+            x = !is.na(x)
+        }
+        x
+    }
+    n = length(cfit_args$x)
+    keep = checker(cfit_args$x, n ) &
+        checker(cfit_args$y, n) &
+        checker(cfit_args$weights, n) &
+        checker(cfit_args$strata, n)
+    cfit_args$y = cfit_args$y[keep]
+    cfit_args$x = cfit_args$x[keep]
+    cfit_args$weights = cfit_args$weights[keep]
+    cfit_args$strata = cfit_args$strata[keep]
 
     cfit = do.call(survival::concordancefit, args = cfit_args)
+    stopifnot(!is.null(cfit))
     fit_k$residuals = fit_k$weights = fit_k$linear.predictors = NULL
     fit_k$call$data = fit_k$y = NULL
     fit_k$call$weights = fit_k$call$strata = NULL
@@ -120,6 +144,24 @@ estimate_concordance = function(
 #'                seed = 1989,
 #'                max_model_size = 50,
 #'                verbose = TRUE)
+#' conc = sapply(res, `[[`, "best_concordance")
+#' threshold = 0.01
+#' included_variables = names(conc)[c(1, diff(conc)) > threshold]
+#'
+#' new_variables = c("diabetes", "stroke")
+#' second_level = cforward(nhanes_example,
+#'                event_time = "event_time_years",
+#'                event_status = "mortstat",
+#'                weight_column = "WTMEC4YR_norm",
+#'                variables = new_variables,
+#'                included_variables = included_variables,
+#'                n_folds = 5,
+#'                seed = 1989,
+#'                max_model_size = 50,
+#'                verbose = TRUE)
+#' second_conc = sapply(second_level, `[[`, "best_concordance")
+#' result = second_level[[which.max(second_conc)]]
+#' final_model = result$models[[which.max(result$cv_concordance)]]
 cforward = function(
     data,
     event_time = "event_time_years",
@@ -198,10 +240,11 @@ cforward = function(
             message(paste0("number of variables: ", length(included_variables),
                            "\n"))
         }
-        if (length(included_variables) > max_model_size) {
+        if (length(included_variables) >= max_model_size) {
             break
         }
     }
+    # names(all_lists) = paste0("level_", seq_along(all_lists))
     return(all_lists)
 }
 

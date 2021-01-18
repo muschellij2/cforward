@@ -97,4 +97,22 @@ res = cforward(nhanes_example,
                seed = 1989,
                max_model_size = 50,
                verbose = TRUE)
+conc = sapply(res, `[[`, "best_concordance")
+threshold = 0.01
+included_variables = names(conc)[c(1, diff(conc)) > threshold]
+
+new_variables = c("diabetes", "stroke")
+second_level = cforward(nhanes_example,
+               event_time = "event_time_years",
+               event_status = "mortstat",
+               weight_column = "WTMEC4YR_norm",
+               variables = new_variables,
+               included_variables = included_variables,
+               n_folds = 5,
+               seed = 1989,
+               max_model_size = 50,
+               verbose = TRUE)
+second_conc = sapply(second_level, `[[`, "best_concordance")
+result = second_level[[which.max(second_conc)]]
+final_model = result$models[[which.max(result$cv_concordance)]]
 }

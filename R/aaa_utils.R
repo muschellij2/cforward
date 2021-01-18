@@ -12,7 +12,7 @@ check_data = function(data,
   uindvars = unique(unlist(ind_vars))
   sd = setdiff(uindvars, colnames(data))
   if (length(sd) > 0) {
-    msg = paste0("Indepedent variables not in data: ",
+    msg = paste0("Independent variables not in data: ",
                  paste(sd, collapse = ", "))
     stop(msg)
   }

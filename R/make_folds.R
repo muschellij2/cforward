@@ -22,11 +22,15 @@ make_folds = function(data,
     data = tibble::as_tibble(data)
   } else {
     msg = "fold_number in data, using these folds"
-    message(msg)
+    if (verbose) {
+      message(msg)
+    }
   }
   stopifnot(!anyNA(data$fold_number))
-  data %>%
-    dplyr::count(fold_number) %>%
-    print()
+  if (verbose) {
+    data %>%
+      dplyr::count(fold_number) %>%
+      print()
+  }
   data
 }
