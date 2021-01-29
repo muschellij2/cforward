@@ -126,3 +126,23 @@ testthat::test_that("Restrict maximum size", {
                          verbose = TRUE)
   testthat::expect_length(small_model, 3L)
 })
+
+
+
+testthat::test_that("Restrict c_threshold", {
+  variables = c("gender",
+                "age_years_interview", "education_adult")
+  res = cforward(nhanes_example,
+                 event_time = "event_time_years",
+                 event_status = "mortstat",
+                 weight_column = "WTMEC4YR_norm",
+                 variables = variables,
+                 included_variables = NULL,
+                 n_folds = 5,
+                 c_threshold = 0.02,
+                 seed = 1989,
+                 save_memory = TRUE,
+                 max_model_size = 50,
+                 verbose = TRUE)
+  testthat::expect_length(res, 2L)
+})

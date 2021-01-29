@@ -117,6 +117,10 @@ estimate_concordance = function(
 #' @param cfit_args Arguments passed to \code{\link{concordancefit}}.  If
 #' `strata` is to be passed, set `strata_column` in this list.
 #' @param ... Additional arguments to pass to \code{\link{coxph}}
+#' @param save_memory save only a minimal amount of information, discard
+#' the fitted models
+#' @param c_threshold threshold for concordance.  If the difference in the best
+#' concordance and this one does not reach a certain threshold, break.
 #'
 #' @return A list of lists, with elements of:
 #' \describe{
@@ -133,6 +137,21 @@ estimate_concordance = function(
 #' @examples
 #' variables = c("gender",
 #'               "age_years_interview", "education_adult")
+#'
+#' res = cforward(nhanes_example,
+#'                event_time = "event_time_years",
+#'                event_status = "mortstat",
+#'                weight_column = "WTMEC4YR_norm",
+#'                variables = variables,
+#'                included_variables = NULL,
+#'                n_folds = 5,
+#'                c_threshold = 0.02,
+#'                seed = 1989,
+#'                max_model_size = 50,
+#'                verbose = TRUE)
+#' conc = sapply(res, `[[`, "best_concordance")
+#'
+#'
 #'
 #' res = cforward(nhanes_example,
 #'                event_time = "event_time_years",
@@ -172,8 +191,10 @@ cforward = function(
     n_folds = 10,
     seed = 1989,
     max_model_size = 50,
+    c_threshold = NULL,
     verbose = TRUE,
     cfit_args = list(),
+    save_memory = FALSE,
     ...) {
 
     all_variables = c(variables, included_variables)
@@ -219,6 +240,7 @@ cforward = function(
     # so they shouldn't be dropped from model
 
     all_lists = NULL
+    current_concordance = 0
     while(length(variables) > 0) {
         L = cforward_one(data,
                          event_time = event_time,
@@ -231,18 +253,27 @@ cforward = function(
                          ...)
         next_var = choose_next_variable(L$cv_concordance)
         L$best_concordance = next_var
+        if (save_memory) {
+            L$model = NULL
+        }
         next_var = names(next_var)
         all_lists = c(all_lists, list(L))
         included_variables = c(included_variables, next_var)
         variables = setdiff(variables, included_variables)
+        if (length(included_variables) >= max_model_size) {
+            break
+        }
         if (verbose) {
             message(paste0("next variable: ", next_var))
             message(paste0("number of variables: ", length(included_variables),
                            "\n"))
         }
-        if (length(included_variables) >= max_model_size) {
+        if (!is.null(c_threshold) &&
+            (L$best_concordance - current_concordance) < c_threshold) {
             break
         }
+        current_concordance = L$best_concordance
+
     }
     # names(all_lists) = paste0("level_", seq_along(all_lists))
     return(all_lists)
@@ -262,6 +293,7 @@ cforward_one = function(
     included_variables = NULL,
     verbose = TRUE,
     cfit_args = list(),
+    save_memory = FALSE,
     ...) {
 
     fold_number = n = NULL
@@ -295,6 +327,9 @@ cforward_one = function(
     all_models = vector(mode = "list",
                         length = length(variables))
     names(all_models) = variables
+    if (save_memory) {
+        all_models = NULL
+    }
     i = 1
     ## loop over the number independent variables
     for (i in seq_along(variables)) {
@@ -311,7 +346,9 @@ cforward_one = function(
             cfit_args = cfit_args,
             ...)
         concordance_full[[ivar]] = full_conc$concordance
-        all_models[[ivar]] = full_conc$model
+        if (!save_memory) {
+            all_models[[ivar]] = full_conc$model
+        }
 
         for (k in u_folds){
             xdf_train <- data %>%
@@ -348,10 +385,10 @@ cforward_one = function(
     names(concordance_cross) = variables
 
     L = list(
-        full_concordance = concordance_full,
-        models = all_models,
-        cv_concordance = concordance_cross,
-        included_variables = included_variables)
+        full_concordance = concordance_full)
+    L$models = all_models
+    L$cv_concordance = concordance_cross
+    L$included_variables = included_variables
     return(L)
 }
 

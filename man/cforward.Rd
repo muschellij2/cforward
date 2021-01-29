@@ -16,8 +16,10 @@ cforward(
   n_folds = 10,
   seed = 1989,
   max_model_size = 50,
+  c_threshold = NULL,
   verbose = TRUE,
   cfit_args = list(),
+  save_memory = FALSE,
   ...
 )
 
@@ -30,6 +32,7 @@ cforward_one(
   included_variables = NULL,
   verbose = TRUE,
   cfit_args = list(),
+  save_memory = FALSE,
   ...
 )
 
@@ -62,10 +65,16 @@ the full data, set to 1}
 will stop if reached. Note, this does not correspond to the number
 of coefficients, due to categorical variables.}
 
+\item{c_threshold}{threshold for concordance.  If the difference in the best
+concordance and this one does not reach a certain threshold, break.}
+
 \item{verbose}{print diagnostic messages}
 
 \item{cfit_args}{Arguments passed to \code{\link{concordancefit}}.  If
 \code{strata} is to be passed, set \code{strata_column} in this list.}
+
+\item{save_memory}{save only a minimal amount of information, discard
+the fitted models}
 
 \item{...}{Additional arguments to pass to \code{\link{coxph}}}
 }
@@ -86,6 +95,21 @@ Forward Selection Based on C-Index/Concordance
 \examples{
 variables = c("gender",
               "age_years_interview", "education_adult")
+
+res = cforward(nhanes_example,
+               event_time = "event_time_years",
+               event_status = "mortstat",
+               weight_column = "WTMEC4YR_norm",
+               variables = variables,
+               included_variables = NULL,
+               n_folds = 5,
+               c_threshold = 0.02,
+               seed = 1989,
+               max_model_size = 50,
+               verbose = TRUE)
+conc = sapply(res, `[[`, "best_concordance")
+
+
 
 res = cforward(nhanes_example,
                event_time = "event_time_years",
