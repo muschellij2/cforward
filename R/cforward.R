@@ -250,6 +250,7 @@ cforward = function(
                          included_variables = included_variables,
                          verbose = verbose,
                          cfit_args = cfit_args,
+                         save_memory = save_memory,
                          ...)
         next_var = choose_next_variable(L$cv_concordance)
         L$best_concordance = next_var
