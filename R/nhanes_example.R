@@ -1,4 +1,4 @@
-#' Example Data from NHANES
+#' Example Data from National Health and Nutrition Examination Survey ('NHANES')
 #'
 #' @format A `data.frame` with 7 columns, which are:
 #' \describe{

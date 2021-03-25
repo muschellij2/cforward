@@ -13,7 +13,8 @@ Authors@R: c(
      role = c("aut")
      )
   )
-Description: Performs forward model selection, using the C-index/concordance.
+Description: Performs forward model selection, using the C-index/concordance
+  in survival analysis models. 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

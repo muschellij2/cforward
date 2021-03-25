@@ -3,7 +3,7 @@
 \docType{data}
 \name{nhanes_example}
 \alias{nhanes_example}
-\title{Example Data from NHANES}
+\title{Example Data from National Health and Nutrition Examination Survey ('NHANES')}
 \format{
 A \code{data.frame} with 7 columns, which are:
 \describe{
@@ -20,6 +20,6 @@ A \code{data.frame} with 7 columns, which are:
 nhanes_example
 }
 \description{
-Example Data from NHANES
+Example Data from National Health and Nutrition Examination Survey ('NHANES')
 }
 \keyword{datasets}
