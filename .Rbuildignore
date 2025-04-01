@@ -7,3 +7,4 @@
 ^CRAN-RELEASE$
 ^\.DS_Store$
 ^\.*/\.DS_Store$
+^CRAN-SUBMISSION$
