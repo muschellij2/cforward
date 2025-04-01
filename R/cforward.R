@@ -6,16 +6,16 @@
 #' @param test A data set to estimate concordance, from fit model with `train`.
 #' Set to `train` if estimating on the same data
 #' @param event_time Character vector of length 1 with event times, passed to
-#' \code{\link{Surv}}
+#' \code{\link[survival]{Surv}}
 #' @param event_status Character vector of length 1 with event status, passed to
-#' \code{\link{Surv}}
+#' \code{\link[survival]{Surv}}
 #' @param weight_column Character vector of length 1 with weights for
 #' model.  If no weights are available, set to `NULL`
 #' @param all_variables Character vector of variables to put in the
 #' model.  All must be in `data`.
-#' @param cfit_args Arguments passed to \code{\link{concordancefit}}.  If
+#' @param cfit_args Arguments passed to \code{\link[survival]{concordancefit}}.  If
 #' `strata` is to be passed, set `strata_column` in this list.
-#' @param ... Additional arguments to pass to \code{\link{coxph}}
+#' @param ... Additional arguments to pass to \code{\link[survival]{coxph}}
 #'
 #' @return A list of concordance and the model fit with the training data
 #' @export
@@ -98,9 +98,9 @@ estimate_concordance = function(
 #'
 #' @param data A data set to perform model selection and cross-validation.
 #' @param event_time Character vector of length 1 with event times, passed to
-#' \code{\link{Surv}}
+#' \code{\link[survival]{Surv}}
 #' @param event_status Character vector of length 1 with event status, passed to
-#' \code{\link{Surv}}
+#' \code{\link[survival]{Surv}}
 #' @param weight_column Character vector of length 1 with weights for
 #' model.  If no weights are available, set to `NULL`
 #' @param variables Character vector of variables to perform selection.
@@ -114,9 +114,9 @@ estimate_concordance = function(
 #' will stop if reached. Note, this does not correspond to the number
 #' of coefficients, due to categorical variables.
 #' @param verbose print diagnostic messages
-#' @param cfit_args Arguments passed to \code{\link{concordancefit}}.  If
+#' @param cfit_args Arguments passed to \code{\link[survival]{concordancefit}}.  If
 #' `strata` is to be passed, set `strata_column` in this list.
-#' @param ... Additional arguments to pass to \code{\link{coxph}}
+#' @param ... Additional arguments to pass to \code{\link[survival]{coxph}}
 #' @param save_memory save only a minimal amount of information, discard
 #' the fitted models
 #' @param c_threshold threshold for concordance.  If the difference in the best

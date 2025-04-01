@@ -42,10 +42,10 @@ make_folds(data, event_status = "mortstat", n_folds = 10, verbose = TRUE)
 \item{data}{A data set to perform model selection and cross-validation.}
 
 \item{event_time}{Character vector of length 1 with event times, passed to
-\code{\link{Surv}}}
+\code{\link[survival]{Surv}}}
 
 \item{event_status}{Character vector of length 1 with event status, passed to
-\code{\link{Surv}}}
+\code{\link[survival]{Surv}}}
 
 \item{weight_column}{Character vector of length 1 with weights for
 model.  If no weights are available, set to \code{NULL}}
@@ -70,13 +70,13 @@ concordance and this one does not reach a certain threshold, break.}
 
 \item{verbose}{print diagnostic messages}
 
-\item{cfit_args}{Arguments passed to \code{\link{concordancefit}}.  If
+\item{cfit_args}{Arguments passed to \code{\link[survival]{concordancefit}}.  If
 \code{strata} is to be passed, set \code{strata_column} in this list.}
 
 \item{save_memory}{save only a minimal amount of information, discard
 the fitted models}
 
-\item{...}{Additional arguments to pass to \code{\link{coxph}}}
+\item{...}{Additional arguments to pass to \code{\link[survival]{coxph}}}
 }
 \value{
 A list of lists, with elements of:

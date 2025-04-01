@@ -22,10 +22,10 @@ estimate_concordance(
 Set to \code{train} if estimating on the same data}
 
 \item{event_time}{Character vector of length 1 with event times, passed to
-\code{\link{Surv}}}
+\code{\link[survival]{Surv}}}
 
 \item{event_status}{Character vector of length 1 with event status, passed to
-\code{\link{Surv}}}
+\code{\link[survival]{Surv}}}
 
 \item{weight_column}{Character vector of length 1 with weights for
 model.  If no weights are available, set to \code{NULL}}
@@ -33,10 +33,10 @@ model.  If no weights are available, set to \code{NULL}}
 \item{all_variables}{Character vector of variables to put in the
 model.  All must be in \code{data}.}
 
-\item{cfit_args}{Arguments passed to \code{\link{concordancefit}}.  If
+\item{cfit_args}{Arguments passed to \code{\link[survival]{concordancefit}}.  If
 \code{strata} is to be passed, set \code{strata_column} in this list.}
 
-\item{...}{Additional arguments to pass to \code{\link{coxph}}}
+\item{...}{Additional arguments to pass to \code{\link[survival]{coxph}}}
 }
 \value{
 A list of concordance and the model fit with the training data
